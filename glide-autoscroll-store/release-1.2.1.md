@@ -1,6 +1,6 @@
 ## Middle-click autoscroll for Linux
 
-First public release. Chrome, Brave and Chromium on Linux have no middle-click autoscroll, the feature Windows users get out of the box. Glide adds it: press the mouse wheel on a page, move the mouse, and the page glides. It works on Mac too.
+First public release. Chrome, Brave and Chromium on Linux have no middle-click autoscroll, the feature Windows users get out of the box. Existing extensions that try to add it fell short in everyday use (jerky scrolling, inner panels that wouldn't scroll, middle-click paste going off), so Glide was written from scratch. It adds the feature properly: press the mouse wheel on a page, move the mouse, and the page glides. It works on Mac too.
 
 ### Install
 

@@ -14,9 +14,12 @@ whatever text you last selected.
 
 Firefox has the feature built in (switched off by default on Linux, under Settings → General →
 Browsing → "Use autoscrolling"), but Chromium-based browsers don't offer it in their settings.
-The extensions that tried to fill the gap felt jerky, couldn't scroll the inner panels most
-modern sites are built from, or set off Linux's middle-click paste. Glide was written to fix
-that properly.
+
+There are already extensions in the Chrome Web Store that set out to add it, and Glide exists
+because they fell short in everyday use: scrolling that felt jerky, no way to scroll the inner
+panels most modern sites are built from (sidebars, chat and mail lists, code panels), or Linux's
+middle-click paste going off when a scroll started or stopped. Rather than live with that, Glide
+was written from scratch to get those things right.
 
 If you landed here searching for something like *middle mouse button scrolling not working on
 Linux*, *autoscroll in Brave on Ubuntu / Fedora / Arch / Mint*, or *Windows-style middle-click

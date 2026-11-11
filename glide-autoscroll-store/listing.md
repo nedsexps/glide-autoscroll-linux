@@ -16,7 +16,7 @@ Upload `glide-autoscroll-1.2.1-chrome-web-store.zip` (built by `npm run store:zi
 ### Description
 
 ```text
-On Windows, you can press the mouse wheel and move the mouse to scroll a page. Chrome, Brave and other Chromium browsers on Linux don't have this: middle-click does nothing on a page, or pastes. Glide was made to fill that gap. It works the same on Mac, where Chrome doesn't have it either.
+On Windows, you can press the mouse wheel and move the mouse to scroll a page. Chrome, Brave and other Chromium browsers on Linux don't have this: middle-click does nothing on a page, or pastes. Other extensions set out to fill that gap but fell short in everyday use: jerky scrolling, no way to scroll the panels inside a page, or Linux's middle-click paste going off. Glide was written from scratch to get those right. It works the same on Mac, where Chrome doesn't have it either.
 
 Press the middle mouse button (the scroll wheel) on a page, then move the mouse. The page glides in that direction, faster the further you move. Move back to where you clicked to stop.
 

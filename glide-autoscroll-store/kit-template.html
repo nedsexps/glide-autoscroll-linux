@@ -1,0 +1,395 @@
+<title>Glide Store Kit</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+  /* Layout: one reading column that follows the dashboard's own tab order; each step is a
+     section with a done-box, each field a label row with its copy button over the exact text. */
+  :root {
+    --bg: #f4f6fa; --surface: #ffffff; --sunk: #eef1f7; --ink: #151821; --muted: #5d6475; --line: #dfe3ec;
+    --accent: #2f6df6; --accent-ink: #ffffff; --accent-soft: #e6eeff; --ok: #1d7f49; --ok-soft: #e1f4e9; --warn: #9a5b00; --warn-soft: #fdf1dc;
+    --display: "Space Grotesk", "Inter", system-ui, sans-serif;
+    --text: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e1015; --surface: #161922; --sunk: #1c2029; --ink: #e7eaf1; --muted: #9aa1b2; --line: #2a2f3b;
+      --accent: #6d9bff; --accent-ink: #0b1022; --accent-soft: #1b2643; --ok: #57c98a; --ok-soft: #14291e; --warn: #f0b04f; --warn-soft: #2d2311;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e1015; --surface: #161922; --sunk: #1c2029; --ink: #e7eaf1; --muted: #9aa1b2; --line: #2a2f3b;
+    --accent: #6d9bff; --accent-ink: #0b1022; --accent-soft: #1b2643; --ok: #57c98a; --ok-soft: #14291e; --warn: #f0b04f; --warn-soft: #2d2311;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font: 15px/1.6 var(--text); }
+  .page {
+    max-width: 820px; margin: 0 auto;
+    padding-block: 40px 80px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    display: grid; gap: 28px;
+  }
+  a { color: var(--accent); }
+  code, .mono { font-family: var(--mono); font-size: .88em; }
+  code { background: var(--sunk); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
+  h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+
+  header { display: grid; gap: 10px; }
+  .eyebrow { font: 600 12px/1 var(--text); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+  h1 { font-size: clamp(30px, 6vw, 42px); line-height: 1.05; letter-spacing: -.02em; font-weight: 700; }
+  .lede { color: var(--muted); font-size: 17px; margin: 0; max-width: 62ch; }
+  .facts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+  .fact { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  .fact b { color: var(--ink); font-weight: 600; }
+
+  .you { background: var(--warn-soft); border: 1px solid color-mix(in srgb, var(--warn) 30%, transparent); border-radius: 12px; padding: 18px 20px; display: grid; gap: 10px; }
+  .you h2 { font-size: 18px; color: var(--ink); }
+  .you ol { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+
+  .progress { display: grid; gap: 8px; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding-block: 10px; }
+  body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+  .progress .row { display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; color: var(--muted); }
+  .progress .row b { color: var(--ink); font-variant-numeric: tabular-nums; }
+  .bar { height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+  .bar i { display: block; height: 100%; width: 0; background: var(--ok); transition: width .25s ease; }
+  @media (prefers-reduced-motion: reduce) { .bar i { transition: none; } }
+
+  .step { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px 22px 24px; display: grid; gap: 18px; min-width: 0; }
+  .step.done { border-color: color-mix(in srgb, var(--ok) 45%, var(--line)); }
+  .step-head { display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: start; }
+  .num { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font: 700 14px var(--display); background: var(--accent-soft); color: var(--accent); font-variant-numeric: tabular-nums; }
+  .step.done .num { background: var(--ok-soft); color: var(--ok); }
+  .step-head h2 { font-size: 21px; line-height: 1.25; }
+  .where { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .done-box { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; color: var(--muted); cursor: pointer; user-select: none; white-space: nowrap; padding: 4px 2px; }
+  .done-box input { width: 17px; height: 17px; accent-color: var(--ok); margin: 0; cursor: pointer; }
+  .step-body { display: grid; gap: 16px; min-width: 0; }
+  .step-body > p, .step-body > ul, .step-body > ol { margin: 0; }
+  .step-body ul, .step-body ol { padding-left: 20px; display: grid; gap: 6px; }
+
+  .field { display: grid; gap: 8px; min-width: 0; }
+  .field-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .label { font-weight: 600; }
+  .count { font: 12px var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+  .field-head .copy { margin-left: auto; }
+  .text { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--sunk); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; font-size: 14px; line-height: 1.6; max-height: 340px; overflow: auto; }
+  .text.short { max-height: none; }
+  .value { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .value .pill { font-weight: 600; background: var(--sunk); border: 1px solid var(--line); border-radius: 8px; padding: 5px 11px; }
+  button.copy, button.ghost {
+    font: 600 13px/1 var(--text); padding: 8px 13px; border-radius: 8px; cursor: pointer;
+    border: 1px solid var(--accent); background: var(--accent); color: var(--accent-ink);
+  }
+  button.ghost { background: transparent; color: var(--accent); }
+  button.copy.copied { background: var(--ok); border-color: var(--ok); color: var(--surface); }
+  button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .answer { display: grid; gap: 4px; padding: 12px 14px; border-radius: 10px; border: 1px dashed var(--line); }
+  .answer .q { font-size: 13px; color: var(--muted); }
+  .answer .a { font-weight: 600; }
+  .answer ul { margin: 4px 0 0; padding-left: 20px; font-weight: 400; display: grid; gap: 4px; }
+
+  .images { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+  .shot { margin: 0; display: grid; gap: 6px; align-content: start; min-width: 0; }
+  .shot .frame { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--sunk); display: grid; place-items: center; aspect-ratio: 16 / 10; }
+  .shot img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .shot.icon .frame img { width: 96px; height: 96px; }
+  .shot figcaption { font-size: 13px; display: grid; gap: 1px; }
+  .shot figcaption b { font-weight: 600; }
+  .shot figcaption .mono { color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
+  .tag { display: inline-block; font: 600 11px/1 var(--text); letter-spacing: .04em; text-transform: uppercase; padding: 3px 6px; border-radius: 4px; margin-left: 6px; vertical-align: 1px; }
+  .tag.req { background: var(--accent-soft); color: var(--accent); }
+  .tag.opt { background: var(--sunk); color: var(--muted); }
+
+  .note { font-size: 13.5px; color: var(--muted); }
+  footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; }
+
+  @media (max-width: 560px) {
+    .step { padding: 18px 16px 20px; }
+    .step-head { grid-template-columns: auto 1fr; }
+    .done-box { grid-column: 2; }
+  }
+</style>
+
+<div class="page">
+  <header>
+    <div class="eyebrow">Chrome Web Store submission</div>
+    <h1>Glide Autoscroll 1.2.1</h1>
+    <p class="lede">Everything to upload and paste, in the order the Developer Dashboard asks for it. Each text box is exactly what goes in that field.</p>
+    <div class="facts">
+      <span class="fact">Upload <b class="mono">glide-autoscroll-1.2.1-chrome-web-store.zip</b></span>
+      <span class="fact"><b>7</b> images</span>
+      <span class="fact">Tested in <b>Chrome 153 on Linux</b></span>
+      <span class="fact">Code <a class="mono" href="https://github.com/nedsexps/glide-autoscroll-linux" target="_blank" rel="noopener">nedsexps/glide-autoscroll-linux</a></span>
+    </div>
+  </header>
+
+  <section class="you" aria-labelledby="you-h">
+    <h2 id="you-h">Two things only you can do</h2>
+    <ol>
+      <li>Finish the account settings (step 1): 2-Step Verification, publisher name, contact email and trader status.</li>
+      <li>Use the exact upload build in Brave for a day before you submit (step 2). It has been tested in Chrome on Linux, not yet in Brave or on a Mac.</li>
+    </ol>
+  </section>
+
+  <div class="progress" aria-live="polite">
+    <div class="row"><span>Your progress</span><span><b id="done-n">0</b> of <b id="done-total">0</b> steps done</span></div>
+    <div class="bar"><i id="bar"></i></div>
+  </div>
+
+  <section class="step" id="account">
+    <div class="step-head">
+      <div class="num">1</div>
+      <div><h2>Finish your account settings</h2><div class="where">Developer Dashboard, Account tab</div></div>
+      <label class="done-box"><input type="checkbox" id="done-account"> Done</label>
+    </div>
+    <div class="step-body">
+      <ul>
+        <li>Registration fee: paid.</li>
+        <li>Make sure 2-Step Verification is on for the Google account you registered with. Publishing and updating need it.</li>
+        <li>Account tab: set a <b>Publisher name</b> (shown as "Offered by" on the listing) and verify a <b>contact email</b>. That email appears in the listing's contact details, so use one you're happy to show.</li>
+        <li>Declare <b>trader or non-trader</b> status (EU rules). A free hobby project is usually non-trader. If it's part of a business you're a trader, and your verified business details are shown publicly. Google leaves the call to each publisher.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="step" id="try">
+    <div class="step-head">
+      <div class="num">2</div>
+      <div><h2>Try the upload build in Brave</h2><div class="where">brave://extensions, before you submit</div></div>
+      <label class="done-box"><input type="checkbox" id="done-try"> Done</label>
+    </div>
+    <div class="step-body">
+      <ol>
+        <li>Unzip <code>glide-autoscroll-1.2.1-chrome-web-store.zip</code> into a folder.</li>
+        <li>In <code>brave://extensions</code>, remove your current Glide copy, then <b>Load unpacked</b> and pick that folder.</li>
+        <li>Use it as normal for a day: long pages, sites with side panels, embedded videos and posts, the toolbar switch.</li>
+      </ol>
+      <p class="note">The listing says Linux and Mac. Nothing in the code is Mac-specific, but it has only been run on Linux. If you'd rather claim only what's been tried, edit the description in <code>manifest.json</code> and rebuild the zip.</p>
+    </div>
+  </section>
+
+  <section class="step" id="release">
+    <div class="step-head">
+      <div class="num">3</div>
+      <div><h2>Publish the first GitHub release</h2><div class="where">github.com/nedsexps/glide-autoscroll-linux, Releases, Draft a new release</div></div>
+      <label class="done-box"><input type="checkbox" id="done-release"> Done</label>
+    </div>
+    <div class="step-body">
+      <ol>
+        <li>Open <a href="https://github.com/nedsexps/glide-autoscroll-linux/releases/new" target="_blank" rel="noopener">Draft a new release</a>.</li>
+        <li><b>Choose a tag</b>: type the tag below and pick "Create new tag: v1.2.1 on publish". Target: <code>main</code>.</li>
+        <li>Paste the title and the notes.</li>
+        <li>Drag <code>glide-autoscroll-1.2.1-chrome-web-store.zip</code> into the attachments box.</li>
+        <li>Leave "Set as the latest release" ticked and "Set as a pre-release" unticked, then <b>Publish release</b>.</li>
+      </ol>
+      <div class="field" data-field="release_tag" data-label="Tag"></div>
+      <div class="field" data-field="release_title" data-label="Release title"></div>
+      <div class="field" data-field="release_notes" data-label="Release notes (Markdown)"></div>
+    </div>
+  </section>
+
+  <section class="step" id="package">
+    <div class="step-head">
+      <div class="num">4</div>
+      <div><h2>Upload the package</h2><div class="where">Items, then Add new item</div></div>
+      <label class="done-box"><input type="checkbox" id="done-package"> Done</label>
+    </div>
+    <div class="step-body">
+      <p>Choose <code>glide-autoscroll-1.2.1-chrome-web-store.zip</code>. Upload the zip itself, not a folder and not the project zip. The dashboard reads these from it:</p>
+      <div class="answer"><span class="q">Name</span><span class="a" id="v-name"></span></div>
+      <div class="answer"><span class="q">Summary, from the manifest (<span id="v-summary-n"></span> of 132 characters)</span><span class="a" id="v-summary"></span></div>
+    </div>
+  </section>
+
+  <section class="step" id="listing">
+    <div class="step-head">
+      <div class="num">5</div>
+      <div><h2>Store listing</h2><div class="where">Store listing tab</div></div>
+      <label class="done-box"><input type="checkbox" id="done-listing"> Done</label>
+    </div>
+    <div class="step-body">
+      <div class="field" data-field="description" data-label="Description"></div>
+      <div class="value"><span class="label">Category</span><span class="pill" id="v-category"></span><span class="note">under "Make Chrome Yours". Accessibility also fits.</span></div>
+      <div class="value"><span class="label">Language</span><span class="pill" id="v-language"></span></div>
+      <div class="field">
+        <div class="field-head"><span class="label">Graphic assets</span><span class="count">from the images folder</span></div>
+        <div class="images" id="images"></div>
+      </div>
+      <div class="field" data-field="homepage" data-label="Homepage URL"></div>
+      <div class="field" data-field="support" data-label="Support URL"></div>
+      <p class="note">Screenshots go in the order shown. Leave the video and official URL empty. Mature content: off.</p>
+    </div>
+  </section>
+
+  <section class="step" id="privacy">
+    <div class="step-head">
+      <div class="num">6</div>
+      <div><h2>Privacy practices</h2><div class="where">Privacy tab</div></div>
+      <label class="done-box"><input type="checkbox" id="done-privacy"> Done</label>
+    </div>
+    <div class="step-body">
+      <div class="field" data-field="purpose" data-label="Single purpose description"></div>
+      <div class="field" data-field="storage" data-label="Permission justification: storage"></div>
+      <div class="field" data-field="scripting" data-label="Permission justification: scripting"></div>
+      <div class="field" data-field="host" data-label="Permission justification: host permission"></div>
+      <div class="answer"><span class="q">Are you using remote code?</span><span class="a">No, I am not using remote code.</span></div>
+      <div class="answer">
+        <span class="q">What user data do you plan to collect?</span>
+        <span class="a">Tick none of the data types. Then tick all three certifications:</span>
+        <ul>
+          <li>I do not sell or transfer user data to third parties, outside of the approved use cases</li>
+          <li>I do not use or transfer user data for purposes that are unrelated to my item's single purpose</li>
+          <li>I do not use or transfer user data to determine creditworthiness or for lending purposes</li>
+        </ul>
+      </div>
+      <p class="note">Glide reacts to clicks and pointer position, but only in memory while scrolling; nothing is stored or sent, which is why no data type applies. Similar autoscroll extensions declare the same. If a reviewer disagrees, tick "User activity" and give that explanation.</p>
+      <div class="answer"><span class="q">Privacy policy URL</span><span class="a">The link in the next step.</span></div>
+    </div>
+  </section>
+
+  <section class="step" id="policy">
+    <div class="step-head">
+      <div class="num">7</div>
+      <div><h2>Privacy policy link</h2><div class="where">Privacy tab, privacy policy field</div></div>
+      <label class="done-box"><input type="checkbox" id="done-policy"> Done</label>
+    </div>
+    <div class="step-body">
+      <p>The policy lives in the repository as <code>PRIVACY.md</code>, so GitHub hosts it. Google's user data FAQ says an extension that only uses Chrome's own storage still needs one.</p>
+      <div class="field" data-field="policy_url" data-label="Privacy policy URL"></div>
+      <p class="note">The link works once the project is pushed to GitHub. Open it once to check before you paste it.</p>
+    </div>
+  </section>
+
+  <section class="step" id="distribution">
+    <div class="step-head">
+      <div class="num">8</div>
+      <div><h2>Distribution and test instructions</h2><div class="where">Distribution and Test instructions tabs</div></div>
+      <label class="done-box"><input type="checkbox" id="done-distribution"> Done</label>
+    </div>
+    <div class="step-body">
+      <div class="answer"><span class="q">Distribution</span><span class="a">Free · Public · All regions</span></div>
+      <div class="field" data-field="test" data-label="Test instructions"></div>
+    </div>
+  </section>
+
+  <section class="step" id="submit">
+    <div class="step-head">
+      <div class="num">9</div>
+      <div><h2>Submit for review</h2><div class="where">Submit for review, top right</div></div>
+      <label class="done-box"><input type="checkbox" id="done-submit"> Done</label>
+    </div>
+    <div class="step-body">
+      <ul>
+        <li>Most reviews finish within a few days but some take a few weeks. Access to all sites, a new account and a new extension each add scrutiny, so expect the slower end. You'll get an email either way.</li>
+        <li>To choose the launch moment yourself, untick publishing automatically. You then have 30 days after approval to publish.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="step" id="after">
+    <div class="step-head">
+      <div class="num">10</div>
+      <div><h2>Once it's live</h2><div class="where">Brave, and the project folder for updates</div></div>
+      <label class="done-box"><input type="checkbox" id="done-after"> Done</label>
+    </div>
+    <div class="step-body">
+      <ul>
+        <li>Install Glide from the store, then remove the unpacked copy so only one copy handles middle-clicks.</li>
+        <li>Replace "coming soon" with the store link in <code>README.md</code> and in the release notes (Edit release on GitHub).</li>
+        <li>To ship an update: change the code, raise <code>version</code> in <code>manifest.json</code>, run <code>npm test</code> and <code>npm run store:zip</code> in <code>glide-autoscroll-tests</code>, then Package tab, Upload new package, Submit.</li>
+        <li>If the look changes, run <code>npm run store:images</code> so the screenshots match the extension.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <span>Ticks are saved in this browser only.</span>
+    <span>Sources: Chrome Web Store docs on <a href="https://developer.chrome.com/docs/webstore/images" target="_blank" rel="noopener">images</a>, <a href="https://developer.chrome.com/docs/webstore/cws-dashboard-listing" target="_blank" rel="noopener">listing fields</a>, <a href="https://developer.chrome.com/docs/webstore/program-policies/user-data-faq" target="_blank" rel="noopener">user data</a>, <a href="https://developer.chrome.com/docs/webstore/publish/" target="_blank" rel="noopener">publishing</a>, <a href="https://developer.chrome.com/docs/webstore/review-process" target="_blank" rel="noopener">review</a> and <a href="https://developer.chrome.com/docs/webstore/program-policies/trader-verification-faq" target="_blank" rel="noopener">trader status</a>.</span>
+  </footer>
+</div>
+
+<script>
+const KIT = /*KIT_DATA*/null;
+
+const $ = id => document.getElementById(id);
+const fmt = n => n.toLocaleString('en-GB');
+
+async function copyText(text, button, sourceEl) {
+  const label = button.textContent;
+  try {
+    await navigator.clipboard.writeText(text);
+    button.textContent = 'Copied';
+    button.classList.add('copied');
+    setTimeout(() => { button.textContent = label; button.classList.remove('copied'); }, 1600);
+  } catch (_) {
+    if (sourceEl) {
+      const range = document.createRange();
+      range.selectNodeContents(sourceEl);
+      const sel = getSelection(); sel.removeAllRanges(); sel.addRange(range);
+    }
+    button.textContent = 'Selected: press Ctrl+C';
+    setTimeout(() => { button.textContent = label; }, 2600);
+  }
+}
+
+// copyable fields
+document.querySelectorAll('.field[data-field]').forEach(el => {
+  const text = KIT.fields[el.dataset.field];
+  el.innerHTML = `<div class="field-head"><span class="label"></span><span class="count"></span><button class="copy" type="button">Copy</button></div><div class="text"></div>`;
+  el.querySelector('.label').textContent = el.dataset.label;
+  el.querySelector('.count').textContent = `${fmt(text.length)} characters`;
+  const box = el.querySelector('.text');
+  box.textContent = text;
+  if (text.length < 700) box.classList.add('short');
+  el.querySelector('button').addEventListener('click', e => copyText(text, e.currentTarget, box));
+});
+
+$('v-name').textContent = KIT.name;
+$('v-summary').textContent = KIT.summary;
+$('v-summary-n').textContent = KIT.summary.length;
+$('v-category').textContent = KIT.fields.category;
+$('v-language').textContent = KIT.fields.language;
+
+// images
+for (const img of KIT.images) {
+  const fig = document.createElement('figure');
+  fig.className = 'shot' + (img.icon ? ' icon' : '');
+  fig.innerHTML = `<div class="frame"><img alt=""></div><figcaption><span><b></b><span class="tag"></span></span><span class="mono"></span></figcaption>`;
+  fig.querySelector('img').src = img.src;
+  fig.querySelector('img').alt = img.alt;
+  fig.querySelector('b').textContent = img.field;
+  const tag = fig.querySelector('.tag');
+  tag.textContent = img.required ? 'required' : 'optional';
+  tag.classList.add(img.required ? 'req' : 'opt');
+  fig.querySelector('.mono').textContent = `${img.file} · ${img.size}`;
+  $('images').appendChild(fig);
+}
+
+
+// progress, remembered in this browser only
+const boxes = [...document.querySelectorAll('.done-box input')];
+let saved = {};
+try { saved = JSON.parse(localStorage.getItem('glide-kit-done') || '{}') || {}; } catch (_) {}
+function update() {
+  const n = boxes.filter(b => b.checked).length;
+  $('done-n').textContent = n;
+  $('done-total').textContent = boxes.length;
+  $('bar').style.width = `${(n / boxes.length) * 100}%`;
+  boxes.forEach(b => b.closest('.step').classList.toggle('done', b.checked));
+}
+boxes.forEach(b => {
+  b.checked = !!saved[b.id];
+  b.addEventListener('change', () => {
+    saved[b.id] = b.checked;
+    try { localStorage.setItem('glide-kit-done', JSON.stringify(saved)); } catch (_) {}
+    update();
+  });
+});
+update();
+</script>

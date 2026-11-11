@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Glide Autoscroll promo tile</title>
+<!-- ?size=small (440x280, no text) or ?size=marquee (1400x560) -->
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; overflow: hidden; }
+  body {
+    position: relative; font-family: "Inter", sans-serif; color: #fff;
+    background:
+      radial-gradient(120% 90% at 85% 10%, rgba(255,255,255,.22), transparent 55%),
+      radial-gradient(80% 70% at 0% 100%, rgba(10,30,120,.35), transparent 60%),
+      linear-gradient(135deg, #4a86ff 0%, #2f6df6 45%, #1d4cd2 100%);
+  }
+  body.small { width: 440px; height: 280px; }
+  body.marquee { width: 1400px; height: 560px; }
+
+  .card {
+    position: absolute; background: #fff; border-radius: 16px; overflow: hidden;
+    box-shadow: 0 30px 60px -20px rgba(8, 20, 80, .55), 0 2px 0 rgba(255,255,255,.6) inset;
+    transform: rotate(-7deg);
+  }
+  .small .card { width: 236px; height: 320px; left: 102px; top: 18px; }
+  .marquee .card { width: 420px; height: 560px; left: 830px; top: 40px; }
+  .rows { position: absolute; inset: 0; padding: 26px 24px; }
+  .marquee .rows { padding: 44px 40px; }
+  .rows i { display: block; height: 10px; border-radius: 5px; background: #e3e6ef; margin: 0 0 12px; }
+  .marquee .rows i { height: 16px; border-radius: 8px; margin-bottom: 20px; }
+  .rows i.h { height: 16px; width: 70%; background: #c9cfdc; margin-bottom: 18px; }
+  .marquee .rows i.h { height: 28px; margin-bottom: 30px; }
+  .rows i.img { height: 64px; background: linear-gradient(135deg, #cfe3b4, #9cc2f0); border-radius: 8px; margin: 18px 0; }
+  .marquee .rows i.img { height: 110px; border-radius: 12px; margin: 30px 0; }
+  .rows i.s { width: 82%; } .rows i.m { width: 64%; }
+  /* the lower part of the page streaks upward: it's moving */
+  .blur { position: absolute; left: 0; right: 0; bottom: 0; height: 46%;
+    background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,.75) 80%); }
+
+  .ind { position: absolute; filter: drop-shadow(0 4px 10px rgba(10, 30, 90, .35)); }
+  .small .ind { width: 66px; height: 66px; left: 187px; top: 92px; }
+  .marquee .ind { width: 112px; height: 112px; left: 984px; top: 190px; }
+  .ring { fill: rgba(255,255,255,.96); stroke: rgba(20,20,24,.55); stroke-width: 1.25; }
+  .on { fill: #141418; } .off { fill: rgba(20,20,24,.18); }
+
+  .trail { position: absolute; width: 4px; border-radius: 2px;
+    background: linear-gradient(to bottom, rgba(20,20,24,0), rgba(20,20,24,.35)); }
+  .small .trail { left: 218px; top: 162px; height: 40px; }
+  .marquee .trail { left: 1037px; top: 310px; height: 70px; width: 6px; }
+  .cursor { position: absolute; filter: drop-shadow(0 2px 3px rgba(0,0,0,.35)); }
+  .small .cursor { left: 209px; top: 200px; width: 22px; }
+  .marquee .cursor { left: 1023px; top: 378px; width: 34px; }
+
+  .words { display: none; }
+  .marquee .words { display: block; position: absolute; left: 110px; top: 186px; }
+  .words .row { display: flex; align-items: center; gap: 22px; }
+  .words .logo { width: 84px; height: 84px; flex: none; filter: drop-shadow(0 8px 18px rgba(10, 30, 110, .35)); }
+  .words h1 { margin: 0; font: 700 76px/1 "Inter Display", "Inter", sans-serif; letter-spacing: -.03em; }
+  .words p { margin: 26px 0 0; font: 500 28px/1.35 "Inter", sans-serif; color: rgba(255,255,255,.88); max-width: 600px; }
+</style>
+</head>
+<body>
+  <div class="card"><div class="rows">
+    <i class="h"></i><i></i><i class="s"></i><i class="m"></i><i class="img"></i><i></i><i class="s"></i><i></i><i class="m"></i><i></i><i class="s"></i>
+  </div><div class="blur"></div></div>
+  <svg class="ind" viewBox="0 0 40 40">
+    <circle class="ring" cx="20" cy="20" r="17"/>
+    <circle cx="20" cy="20" r="2.25" fill="#141418"/>
+    <polygon class="on" points="20,8 15,14 25,14"/><polygon class="on" points="20,32 15,26 25,26"/>
+    <polygon class="off" points="8,20 14,15 14,25"/><polygon class="off" points="32,20 26,15 26,25"/>
+  </svg>
+  <div class="trail"></div>
+  <svg class="cursor" viewBox="0 0 24 32">
+    <path d="M9 1h6v17h6.5L12 30.5 2.5 18H9z" fill="#141418" stroke="#fff" stroke-width="2" stroke-linejoin="round"/>
+  </svg>
+  <div class="words">
+    <div class="row"><svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="22" fill="#fff"/><circle cx="50" cy="50" r="7" fill="#2f6df6"/><polygon points="50,4 35,20 65,20" fill="#2f6df6"/><polygon points="50,96 35,80 65,80" fill="#2f6df6"/></svg><h1>Glide Autoscroll</h1></div>
+    <p>Middle-click autoscroll for Linux and Mac</p>
+  </div>
+  <script>document.body.className = new URLSearchParams(location.search).get('size') || 'small';</script>
+</body>
+</html>

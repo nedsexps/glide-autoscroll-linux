@@ -1,0 +1,28 @@
+<!doctype html><html style="scroll-behavior:smooth"><head><meta charset=utf-8>
+<style>
+body{margin:0;font:14px sans-serif}
+#v{position:absolute;left:20px;top:20px;width:300px;height:200px;overflow-y:auto;border:1px solid #888}
+#v div{height:40px;border-bottom:1px solid #ddd}
+#h{position:absolute;left:360px;top:20px;width:300px;height:100px;overflow-x:auto;white-space:nowrap;border:1px solid #888}
+#h span{display:inline-block;width:120px;height:80px;background:#ccd}
+#snap{position:absolute;left:700px;top:20px;width:200px;height:200px;overflow-y:auto;scroll-snap-type:y mandatory;border:1px solid #888}
+#snap div{height:200px;scroll-snap-align:start;border-bottom:2px solid #444}
+#lnk{position:absolute;left:20px;top:260px}
+#ta{position:absolute;left:120px;top:260px;width:200px;height:60px}
+#host{position:absolute;left:360px;top:160px;width:300px;height:100px}
+#fr{position:absolute;left:20px;top:360px;width:300px;height:200px;border:1px solid #888}
+#tall{height:5000px}
+</style></head><body>
+<div id=v></div><div id=h></div><div id=snap></div>
+<a id=lnk href="/test.html#x">a link</a><textarea id=ta></textarea>
+<div id=host></div>
+<iframe id=fr src="http://localhost:8124/inner.html"></iframe>
+<div id=tall></div>
+<script>
+for(let i=0;i<100;i++){v.appendChild(document.createElement('div'))}
+for(let i=0;i<20;i++){h.appendChild(document.createElement('span'))}
+for(let i=0;i<20;i++){snap.appendChild(document.createElement('div'))}
+const sr=host.attachShadow({mode:'open'});
+sr.innerHTML='<div id=s style="width:300px;height:100px;overflow-y:auto;border:1px solid red"><div style="height:2000px"></div></div>';
+window.events=[];['mousedown','mouseup','auxclick','click','contextmenu'].forEach(t=>document.addEventListener(t,e=>events.push(t+':'+e.button)));
+</script></body></html>

@@ -1,0 +1,155 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Glide Autoscroll — Settings</title>
+<style>
+  :root {
+    --bg: #f6f6f8; --card: #ffffff; --fg: #17171c; --muted: #6b6b76; --line: #e5e5ea;
+    --accent: #2f6df6; --track: #d5d5dd; --soft: #eef2fe;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #131317; --card: #1b1b21; --fg: #ececf1; --muted: #9a9aa6; --line: #2b2b33; --accent: #6c9bff; --track: #3a3a45; --soft: #1f2636; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.5 system-ui, -apple-system, "Segoe UI", Ubuntu, sans-serif; }
+  main { max-width: 1080px; margin: 0 auto; padding: 32px 20px 60px; display: grid; grid-template-columns: 400px 1fr; gap: 24px; align-items: start; }
+  @media (max-width: 880px) { main { grid-template-columns: 1fr; } }
+  h1 { grid-column: 1 / -1; margin: 0; font-size: 22px; letter-spacing: -.02em; display: flex; align-items: center; gap: 10px; }
+  h1 img { width: 28px; height: 28px; }
+  h1 small { font-weight: 400; color: var(--muted); font-size: 14px; margin-left: auto; }
+  section { background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
+  section h2 { margin: 0; padding: 14px 18px; font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); border-bottom: 1px solid var(--line); }
+  .field { padding: 14px 18px; }
+  .field + .field { border-top: 1px solid var(--line); }
+  .head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .head output { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 13px; }
+  .hint { color: var(--muted); font-size: 12.5px; margin-top: 2px; }
+  input[type=range] { width: 100%; margin: 10px 0 0; accent-color: var(--accent); }
+  .seg { display: flex; margin-top: 10px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .seg label { flex: 1; text-align: center; padding: 7px 4px; cursor: pointer; font-size: 13px; border-left: 1px solid var(--line); user-select: none; }
+  .seg label:first-child { border-left: 0; }
+  .seg { position: relative; }
+  .seg input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; pointer-events: none; }
+  .seg label:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .switch input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .seg input:checked + span { color: var(--accent); font-weight: 600; }
+  .seg label:has(input:checked) { background: var(--soft); }
+  .toggle { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+  .switch { position: relative; width: 36px; height: 20px; flex: none; }
+  .switch input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; z-index: 1; }
+  .switch span { position: absolute; inset: 0; border-radius: 10px; background: var(--track); transition: background .15s; }
+  .switch span::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.3); transition: transform .15s; }
+  .switch input:checked + span { background: var(--accent); }
+  .switch input:checked + span::after { transform: translateX(16px); }
+  textarea.list { width: 100%; min-height: 90px; margin-top: 10px; resize: vertical; font: 13px/1.5 ui-monospace, "JetBrains Mono", monospace; background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
+  .actions { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; border-top: 1px solid var(--line); }
+  .saved { color: var(--muted); font-size: 12.5px; opacity: 0; transition: opacity .2s; }
+  .saved.show { opacity: 1; }
+  .saved.err { color: #d93636; opacity: 1; }
+  button { font: inherit; font-size: 13px; padding: 6px 12px; border-radius: 7px; border: 1px solid var(--line); background: var(--card); color: var(--fg); cursor: pointer; }
+  button:hover { border-color: var(--muted); }
+
+  /* test area */
+  .test { padding: 16px 18px 18px; display: grid; gap: 14px; }
+  .test p { margin: 0; color: var(--muted); font-size: 13px; }
+  .box { border: 1px solid var(--line); border-radius: 10px; background: var(--bg); }
+  .vbox { height: 240px; overflow-y: auto; padding: 4px 14px; }
+  .vbox .line { padding: 9px 0; border-bottom: 1px dashed var(--line); font-variant-numeric: tabular-nums; }
+  .hbox { overflow-x: auto; display: flex; gap: 10px; padding: 12px; }
+  .hbox .tile { flex: none; width: 120px; height: 72px; border-radius: 8px; background: var(--soft); display: grid; place-items: center; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid2 > div { padding: 12px; font-size: 13px; }
+  .grid2 a { color: var(--accent); }
+  .grid2 textarea { width: 100%; height: 60px; margin-top: 6px; font: inherit; background: var(--card); color: var(--fg); border: 1px solid var(--line); border-radius: 6px; padding: 6px; resize: none; }
+  .filler { height: 900px; display: grid; place-items: end center; padding-bottom: 20px; color: var(--muted); font-size: 13px; }
+  kbd { font: 12px ui-monospace, monospace; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; }
+</style>
+</head>
+<body>
+<main>
+  <h1><img src="icons/icon48.png" alt="">Glide Autoscroll <small>Middle-click anywhere scrollable</small></h1>
+
+  <section>
+    <h2>Behaviour</h2>
+    <div class="field toggle">
+      <div><b id="l-enabled">Enabled</b><div class="hint">Master switch for every site.</div></div>
+      <label class="switch"><input type="checkbox" id="enabled" aria-labelledby="l-enabled"><span></span></label>
+    </div>
+    <div class="field">
+      <div class="head"><b id="l-speed">Speed</b><output id="speedOut"></output></div>
+      <input type="range" id="speed" aria-labelledby="l-speed" min="0.25" max="4" step="0.05">
+    </div>
+    <div class="field">
+      <div class="head"><b id="l-acceleration">Acceleration</b><output id="accelOut"></output></div>
+      <div class="hint">Low = steady, predictable. High = slow near the start point, very fast further out.</div>
+      <input type="range" id="acceleration" aria-labelledby="l-acceleration" min="1" max="2.6" step="0.05">
+    </div>
+    <div class="field">
+      <div class="head"><b id="l-deadZone">Dead zone</b><output id="dzOut"></output></div>
+      <div class="hint">How far you can drift from the start point before anything moves.</div>
+      <input type="range" id="deadZone" aria-labelledby="l-deadZone" min="0" max="40" step="1">
+    </div>
+    <div class="field">
+      <b id="l-mode">Click style</b>
+      <div class="hint">Both: quick click = keeps scrolling until you click again; hold &amp; drag = stops on release.</div>
+      <div class="seg" role="radiogroup" aria-labelledby="l-mode">
+        <label><input type="radio" name="mode" value="both"><span>Both</span></label>
+        <label><input type="radio" name="mode" value="sticky"><span>Click to toggle</span></label>
+        <label><input type="radio" name="mode" value="hold"><span>Hold only</span></label>
+      </div>
+    </div>
+    <div class="field">
+      <b id="l-links">Middle-click on links</b>
+      <div class="seg" role="radiogroup" aria-labelledby="l-links">
+        <label><input type="radio" name="links" value="open"><span>Open in new tab</span></label>
+        <label><input type="radio" name="links" value="scroll"><span>Autoscroll</span></label>
+      </div>
+    </div>
+    <div class="field toggle">
+      <div><b id="l-fallback">Scroll the main area from anywhere</b><div class="hint">On app-style sites where only a panel scrolls, middle-clicking the sidebar, header or margins scrolls that panel.</div></div>
+      <label class="switch"><input type="checkbox" id="fallback" aria-labelledby="l-fallback"><span></span></label>
+    </div>
+    <div class="field toggle">
+      <div><b id="l-skipCanvas">Skip canvas elements</b><div class="hint">Maps, games and drawing apps often use middle-click themselves.</div></div>
+      <label class="switch"><input type="checkbox" id="skipCanvas" aria-labelledby="l-skipCanvas"><span></span></label>
+    </div>
+    <div class="field toggle">
+      <div><b id="l-showIndicator">Show start-point indicator</b></div>
+      <label class="switch"><input type="checkbox" id="showIndicator" aria-labelledby="l-showIndicator"><span></span></label>
+    </div>
+    <div class="field toggle">
+      <div><b id="l-invert">Invert direction</b><div class="hint">Move the mouse down to pull the content down (like dragging).</div></div>
+      <label class="switch"><input type="checkbox" id="invert" aria-labelledby="l-invert"><span></span></label>
+    </div>
+    <div class="field">
+      <b id="l-blocklist">Disabled on these sites</b>
+      <div class="hint">One per line. Domains or pasted URLs both work; <code>example.com</code> also covers its subdomains.</div>
+      <textarea class="list" id="blocklist" aria-labelledby="l-blocklist" spellcheck="false" placeholder="docs.google.com&#10;figma.com"></textarea>
+    </div>
+    <div class="actions">
+      <span class="saved" id="saved" role="status">Saved</span>
+      <button id="reset" title="Your disabled-sites list is kept">Reset to defaults</button>
+    </div>
+  </section>
+
+  <section>
+    <h2>Test area</h2>
+    <div class="test">
+      <p>Middle-click inside any box. Changes on the left apply instantly. <kbd>Esc</kbd>, any click, or the wheel stops a glide. Hold <kbd>Ctrl</kbd>/<kbd>Shift</kbd> to bypass.</p>
+      <div class="box vbox" id="vbox"></div>
+      <div class="box hbox" id="hbox"></div>
+      <div class="grid2">
+        <div class="box">Links should still open a tab:<br><a href="https://example.com" target="_blank">example.com</a></div>
+        <div class="box">Text fields are left alone:<textarea placeholder="middle-click paste still works here"></textarea></div>
+      </div>
+      <div class="filler">Middle-click on the page background scrolls the whole page.</div>
+    </div>
+  </section>
+</main>
+<script src="shared.js"></script>
+<script src="options.js"></script>
+<script src="content.js"></script>
+</body>
+</html>

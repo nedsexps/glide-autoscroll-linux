@@ -1,0 +1,7 @@
+<!doctype html><html><head><meta charset=utf-8><style>
+html,body{margin:0;height:100%;overflow:hidden;font:14px sans-serif}
+#side{position:fixed;left:0;top:0;bottom:0;width:220px;background:#eef;padding:10px}
+#main{position:absolute;left:240px;right:0;top:0;bottom:0;overflow-y:auto}
+#main div{height:60px;border-bottom:1px solid #ddd}
+</style></head><body><nav id=side>app sidebar (doesn't scroll)</nav><main id=main></main>
+<script>for(let i=0;i<200;i++)main.appendChild(document.createElement('div'))</script></body></html>

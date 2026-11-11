@@ -1,0 +1,16 @@
+<!doctype html><html><head><style>body{margin:0}x-list,x-link{display:block;position:absolute}</style></head><body>
+<x-list id=list style="left:20px;top:20px;width:300px;height:150px"><p style="margin:0;height:1200px;background:linear-gradient(#fff,#cdf)">slotted light content</p></x-list>
+<x-box id=box style="position:absolute;left:360px;top:20px;width:300px;height:150px;display:block"></x-box>
+<x-link id=lnk style="left:20px;top:220px"></x-link>
+<div style="height:5000px"></div>
+<script>
+const a = document.getElementById('list').attachShadow({mode:'closed'});
+a.innerHTML = '<div id=sc style="height:150px;overflow-y:auto;border:1px solid #888"><slot></slot></div>';
+window.listScroller = a.getElementById('sc');
+const b = document.getElementById('box').attachShadow({mode:'closed'});
+b.innerHTML = '<div id=sc style="height:150px;overflow-y:auto;border:1px solid red"><div style="height:2000px">inside closed root</div></div>';
+window.boxScroller = b.getElementById('sc');
+const c = document.getElementById('lnk').attachShadow({mode:'closed'});
+c.innerHTML = '<a href="#x" style="display:inline-block;padding:10px;background:#eee">link inside closed shadow root</a>';
+window.events=[];['auxclick'].forEach(t=>document.addEventListener(t,e=>events.push(t+':'+e.button)));
+</script></body></html>

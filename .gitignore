@@ -1,0 +1,6 @@
+node_modules
+package-lock.json
+glide-autoscroll-tests/out/
+# build output: rebuilt with `npm run store:zip`, attached to releases instead
+glide-autoscroll-store/*.zip
+.kit-preview.html

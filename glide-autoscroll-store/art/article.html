@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Why rivers never run straight — The Meander</title>
+<style>
+  :root { --ink: #1c1d22; --muted: #62646e; --line: #e6e4df; --paper: #fbfaf7; --river: #3d7bd9; --accent: #b4532a; }
+  * { box-sizing: border-box; }
+  html { background: var(--paper); }
+  body { margin: 0; color: var(--ink); font: 19px/1.65 "Lora", Georgia, serif; }
+  header.site {
+    position: sticky; top: 0; z-index: 2; display: flex; align-items: center; gap: 28px;
+    height: 56px; padding: 0 28px; background: var(--paper); border-bottom: 1px solid var(--line);
+    font: 500 14px "Inter", sans-serif; color: var(--muted);
+  }
+  .mark { font: italic 600 24px "Lora", serif; color: var(--ink); letter-spacing: -.01em; margin-right: auto; }
+  .mark span { color: var(--river); }
+  header nav { display: flex; gap: 22px; }
+  header nav a { color: inherit; text-decoration: none; }
+  header nav a.on { color: var(--ink); }
+  article { max-width: 640px; margin: 0 auto; padding: 44px 0 120px; }
+  .kicker { font: 600 13px "Inter", sans-serif; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+  h1 { font: 700 44px/1.08 "Inter Display", "Inter", sans-serif; letter-spacing: -.025em; margin: 10px 0 14px; }
+  .standfirst { font-size: 21px; line-height: 1.5; color: #3b3d45; margin: 0 0 18px; }
+  .byline { font: 500 14px "Inter", sans-serif; color: var(--muted); padding-bottom: 26px; border-bottom: 1px solid var(--line); }
+  figure { margin: 30px -40px; }
+  figure svg { display: block; width: 100%; height: auto; border-radius: 6px; }
+  figcaption { font: 14px/1.5 "Inter", sans-serif; color: var(--muted); margin: 10px 40px 0; }
+  h2 { font: 700 26px/1.2 "Inter Display", "Inter", sans-serif; letter-spacing: -.015em; margin: 38px 0 6px; }
+  p { margin: 0 0 20px; }
+  blockquote { margin: 34px 0; padding: 4px 0 4px 26px; border-left: 4px solid var(--river); font: italic 25px/1.45 "Lora", serif; color: #2a3a57; }
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="mark">The <span>Meander</span></div>
+  <nav><a class="on" href="#">Rivers</a><a href="#">Coasts</a><a href="#">Weather</a><a href="#">Field kit</a></nav>
+</header>
+<article>
+  <div class="kicker">Rivers</div>
+  <h1>Why rivers never run straight</h1>
+  <p class="standfirst">Give water a slope and a bank to push against, and it starts to swing. A short guide to meanders, from the first bend to the oxbow lake.</p>
+  <div class="byline">By Ines Ward · 8 min read</div>
+
+  <figure>
+    <svg viewBox="0 0 720 360" xmlns="http://www.w3.org/2000/svg" aria-label="A river winding across a green valley, with a cut-off oxbow lake">
+      <defs>
+        <linearGradient id="land" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfe3b4"/><stop offset="1" stop-color="#b5d39a"/></linearGradient>
+        <linearGradient id="water" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#4f8de6"/><stop offset="1" stop-color="#2f6fd0"/></linearGradient>
+      </defs>
+      <rect width="720" height="360" fill="url(#land)"/>
+      <g fill="none" stroke="#a9c98d" stroke-width="2" opacity=".7">
+        <path d="M0 70 C 160 40, 300 100, 720 60"/><path d="M0 300 C 200 330, 420 270, 720 310"/><path d="M0 330 C 220 350, 460 300, 720 345"/>
+      </g>
+      <path d="M-20 190 C 60 120, 120 110, 170 160 S 230 290, 300 270 S 360 120, 430 120 S 520 250, 560 250 S 640 150, 740 170"
+            fill="none" stroke="#e9e1c8" stroke-width="34" stroke-linecap="round"/>
+      <path d="M-20 190 C 60 120, 120 110, 170 160 S 230 290, 300 270 S 360 120, 430 120 S 520 250, 560 250 S 640 150, 740 170"
+            fill="none" stroke="url(#water)" stroke-width="20" stroke-linecap="round"/>
+      <path d="M455 300 C 480 345, 560 345, 590 300" fill="none" stroke="#5b95e8" stroke-width="13" stroke-linecap="round" opacity=".9"/>
+      <g fill="#7fae5f">
+        <circle cx="90" cy="250" r="16"/><circle cx="112" cy="262" r="12"/><circle cx="240" cy="90" r="15"/><circle cx="262" cy="104" r="11"/>
+        <circle cx="380" cy="300" r="17"/><circle cx="640" cy="80" r="14"/><circle cx="662" cy="95" r="10"/><circle cx="520" cy="70" r="12"/>
+      </g>
+      <g fill="#6a9a4c"><circle cx="98" cy="246" r="7"/><circle cx="246" cy="86" r="7"/><circle cx="386" cy="296" r="8"/><circle cx="645" cy="76" r="6"/></g>
+    </svg>
+    <figcaption>Loops form, migrate and are cut off. The crescent on the right is an old bend, now an oxbow lake.</figcaption>
+  </figure>
+
+  <p>Look down on almost any lowland river and you will see the same thing: loops. Straight stretches rarely run for more than about ten times the channel's width before the water starts to swing from one bank to the other. It isn't chance. Once a bend begins, the river does almost everything it can to make it bigger.</p>
+  <p>It starts with the fastest water. In a straight channel the current runs quickest down the middle, but the smallest disturbance, a fallen tree, a shingle bar or a patch of softer clay, nudges that thread of fast water towards one bank. Where it hits, it erodes. Where it leaves, the slower water drops the sand and gravel it was carrying.</p>
+
+  <h2>Cut banks and point bars</h2>
+  <p>On the outside of a bend the river undercuts its bank, leaving a steep wall called a cut bank. On the inside it builds a gentle slope of sediment called a point bar. Erosion on one side and deposition on the other mean the whole bend slowly migrates outwards and downstream, sometimes by metres a year.</p>
+  <p>Below the surface the water is doing something stranger. As it rounds the bend it piles up slightly against the outer bank, and that extra height drives a slow corkscrew of flow: surface water heads for the outside, sinks, and returns along the bed towards the inside. This helical flow is what carries sediment across the channel to build the point bar.</p>
+
+  <blockquote>Erosion on one side and deposition on the other mean the whole bend slowly walks across its valley.</blockquote>
+
+  <figure>
+    <svg viewBox="0 0 720 260" xmlns="http://www.w3.org/2000/svg" aria-label="Cross-section of a river bend">
+      <rect width="720" height="260" fill="#f1ede4"/>
+      <path d="M0 70 L 150 70 C 260 80, 330 190, 470 205 L 560 205 L 575 70 L 720 70 L 720 260 L 0 260 Z" fill="#d9c7a4"/>
+      <path d="M150 70 C 260 80, 330 190, 470 205 L 560 205 L 575 70 Z" fill="#cfe0f6"/>
+      <path d="M195 74 C 280 88, 340 180, 470 198 L 556 198 L 568 74 Z" fill="#7fb0ec" opacity=".85"/>
+      <g fill="none" stroke="#1f4f9e" stroke-width="3" stroke-linecap="round">
+        <path d="M300 92 C 400 92, 520 96, 540 130 C 550 165, 520 186, 450 180 C 390 172, 350 150, 330 118"/>
+      </g>
+      <polygon points="330,112 322,126 340,124" fill="#1f4f9e"/>
+      <g font-family="Inter, sans-serif" font-size="17" font-weight="600" fill="#3a3d45">
+        <text x="140" y="56">Point bar</text><text x="530" y="56">Cut bank</text>
+      </g>
+      <g font-family="Inter, sans-serif" font-size="14" fill="#5d606a"><text x="128" y="232">gentle, growing</text><text x="560" y="232">steep, eroding</text></g>
+    </svg>
+    <figcaption>Cross-section of a bend: fast water cuts into the outer bank while the inner bank grows.</figcaption>
+  </figure>
+
+  <h2>From loop to lake</h2>
+  <p>Left alone, neighbouring loops creep towards each other until only a narrow neck of land separates them. A flood is often enough to break through. The river takes the short cut, and the abandoned loop, sealed off by fresh deposits, becomes a crescent-shaped oxbow lake.</p>
+  <p>Geographers measure all this with sinuosity: the length of the channel divided by the straight-line distance down the valley. A ratio of 1.5 is enough to call a river meandering, and the most tortuous lowland rivers loop so much that they travel two or three times as far as the crow flies.</p>
+
+  <h2>Why it matters</h2>
+  <p>Meanders slow floods down, sort gravel for spawning fish and build the flat, fertile floodplains that farms and towns have always been drawn to. Straightening rivers to drain land or speed up shipping often backfires: the faster water scours its bed, floods arrive downstream sooner, and engineers spend decades putting the bends back.</p>
+  <p>So the next time a river seems to be taking the long way round, give it some credit. Every loop is the result of a long argument between water and ground, and the water is very patient.</p>
+</article>
+</body>
+</html>

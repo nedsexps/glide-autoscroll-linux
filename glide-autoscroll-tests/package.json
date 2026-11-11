@@ -1,0 +1,21 @@
+{
+  "name": "glide-autoscroll-tests",
+  "private": true,
+  "type": "module",
+  "description": "Browser tests for the Glide Autoscroll extension in ../glide-autoscroll",
+  "scripts": {
+    "test": "node store.mjs && node core.mjs && node fixes-1.1.mjs && node fixes-1.2.mjs && node install.mjs",
+    "test:paste": "node paste-x11.mjs",
+    "lint": "node lint.mjs",
+    "store:images": "node store-images.mjs",
+    "store:zip": "node store-zip.mjs"
+  },
+  "dependencies": {
+    "puppeteer-core": "^25.16.0"
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0",
+    "@eslint/js": "^9.0.0",
+    "globals": "^17.0.0"
+  }
+}
